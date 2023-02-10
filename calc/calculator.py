@@ -37,8 +37,8 @@ class DrawSimulator:
     def __generate_simulating_result(self, user_winning_counter: Counter) -> SimulatingResult:
         simulating_result = SimulatingResult()
 
-        for winning_count in user_winning_counter:
-            simulating_result.add_single_person_result(user_winning_counter[winning_count])
+        for user_idx in user_winning_counter:
+            simulating_result.add_single_person_result(user_winning_counter[user_idx])
 
         return simulating_result
 
