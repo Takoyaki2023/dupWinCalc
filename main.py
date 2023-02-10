@@ -11,9 +11,7 @@ def simulate(mode: int, heavy_user_count: int = 82):
     simulator = DrawSimulator()
 
     trials = 1000
-    five_win_streak_user_count = 0
-    four_win_streak_user_count = 0
-    dup_winner_count = 0
+    total_dup_winning_counter = Counter()
 
     selector = None
     if mode == SIMPLE_SELECTOR_MODE:
@@ -23,24 +21,19 @@ def simulate(mode: int, heavy_user_count: int = 82):
 
     for i in range(trials):
         simulating_result = simulator.simulate_once(event_infos, selector)
-        dup_winning_counter = simulating_result.dup_winning_counter
+        single_trial_dup_winning_counter = simulating_result.dup_winning_counter
 
-        if dup_winning_counter[4] > 0:
-            four_win_streak_user_count += 1
+        for winning_streak in range(2, 6):
+            total_dup_winning_counter[winning_streak] += single_trial_dup_winning_counter[winning_streak]
 
-        if dup_winning_counter[5] > 0:
-            five_win_streak_user_count += 1
+    total_dup_count = sum(total_dup_winning_counter.values())
+    print("dup winner per simulation is {0}\n".format(total_dup_count/1000))
 
-        dup_winner_count += dup_winning_counter[2]
-        dup_winner_count += dup_winning_counter[3]
-        dup_winner_count += dup_winning_counter[4]
-        dup_winner_count += dup_winning_counter[5]
-
-    print("dup winner per simulation is {0}\n".format(dup_winner_count/1000))
-    print("4-game streak winner per simulation is {0}\n".format(four_win_streak_user_count/1000))
-    print("5-game streak winner per simulation is {0}\n".format(five_win_streak_user_count/1000))
+    for winning_streak in range(2, 6):
+        print("{0}-game streak winner per simulation is {1}".format(winning_streak,
+                                                                    total_dup_winning_counter[winning_streak]/1000))
 
 
 if __name__ == '__main__':
-    simulate(HEAVY_USER_SELECTOR_MODE, 20)
+    simulate(HEAVY_USER_SELECTOR_MODE, 30)
     # simulate(SIMPLE_SELECTOR_MODE)
